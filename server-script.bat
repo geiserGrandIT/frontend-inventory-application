@@ -1,0 +1,1 @@
+npm run dev -- --host inventory.geisergrand.com
