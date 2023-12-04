@@ -28,7 +28,11 @@
 	};
 	const selectProduct = (event) => {
 		changePage(2);
-		productSelection = event.detail;
+		console.log("event detail:",event);
+		if (AuditMode) {amountSubmitted=event.detail.amt;}
+		productSelection = event.detail.name;
+		
+		
 	};
 	const submitChange = (event) => {
 		let amt = 0;

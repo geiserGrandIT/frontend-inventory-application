@@ -10,8 +10,8 @@
 	let searchData = [];
 	let filterData = [];
 	const dispatch = createEventDispatcher();
-	const sendItem = (name = '') => {
-		dispatch('messageEvent', name);
+	const sendItem = (name = '', amt='') => {
+		dispatch('messageEvent', {name,amt});
 	};
 
 	async function fetchData() {
@@ -169,7 +169,7 @@
 				{#if filterData.includes(item)}
 					<button
 						on:click={() => {
-							sendItem(item.id);
+							sendItem(item.id, item.quantity);
 						}}
 					>
 						<ItemCard {item} />
