@@ -2,6 +2,16 @@
 	import { page } from '$app/stores';
 	import logo from '$lib/images/geisergrandlogo.png';
 	import github from '$lib/images/github.svg';
+	import {onMount} from 'svelte';
+	let isMobile = false;
+	const checkMobileDevice = ()=>{
+		return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent)
+	};
+	
+	onMount(()=>{
+		isMobile = checkMobileDevice();
+
+	})
 </script>
 
 <header class="flex flex-row space-between">
@@ -18,10 +28,13 @@
 		<ul>
 			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
 				<a href="/">Auditor</a>
-			</li>|
-			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/dashboard">All Items</a>
 			</li>
+			{#if !isMobile}
+			|
+			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
+				<a href="/dashboard">Dashboard</a>
+			</li>
+			{/if}
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />

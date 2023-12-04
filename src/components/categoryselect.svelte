@@ -33,11 +33,11 @@
 </script>
 
 <div class=" w-[18em] flex flex-col justify-center">
-    <h2 class=" text-3xl justify-center">Category</h2>
+    <h2 class=" text-3xl justify-center my-4">Category</h2>
     <div class="flex flex-row justify-center items-center">
     <ul class="flex flex-col ">
         {#each data as item}
-            <li class="bg-white text-2xl justify-center items-center rounded-lg rounded shadow-md m-[2px] pt-[.3em] min-h-[2em] px-[.5em]"><button on:click={() =>{sendCategory(item.name)}}>{item.name}</button></li>
+            <button class="bg-white text-2xl justify-center items-center rounded-lg rounded shadow-md m-[2px] pt-[.3em] min-h-[2em] px-[.5em]" on:click={() =>{sendCategory(item.name)}}>{item.name}</button>
         {/each}
     </ul>   
     </div>
