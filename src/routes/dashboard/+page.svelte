@@ -18,45 +18,43 @@
 			console.log(response);
 			data = [...response.data];
 			selectedData = [...data];
-			
 		} catch (error) {
 			console.error('Error fetching data: ', error);
 		}
 	};
 	onMount(() => {
 		fetchData();
-		
 	});
-	const submitChange = ({id, amount, min}) => {
-		console.log("submitting change",id, amount, min);
+	const submitChange = ({ id, amount, min }) => {
+		console.log('submitting change', id, amount, min);
 		return axios.patch(`${baseURL()}/items/${id}/`, {
 			'change-amount': `${amount}`,
 			'is-audit': 'True',
-			'change-min':`${min}`
+			'change-min': `${min}`
 		});
 	};
-	$ : {
+	$: {
 		data;
 		selectedData;
 	}
 	let showSuccess = false;
-	const handleUpdate = (item, amount, minqty)=>{
-		console.log('handleUpdate',item, amount, minqty)
-		const d = {id:item,amount:amount,min:minqty }
+	const handleUpdate = (item, amount, minqty) => {
+		console.log('handleUpdate', item, amount, minqty);
+		const d = { id: item, amount: amount, min: minqty };
 		updatedItems[item] = d;
 		//submitChange(d);
-	}
-	const openCrud = (item) =>{
+	};
+	const openCrud = (item) => {
 		editingItem = item;
 		open = true;
-	}
-	const saveAll = ()=>{
-		console.log("saveAll");
-		for (const id in updatedItems){
+	};
+	const saveAll = () => {
+		console.log('saveAll');
+		for (const id in updatedItems) {
 			submitChange(updatedItems[id]);
 		}
 		fetchData();
-	}
+	};
 	const sortByName = () => {
 		console.log('sortingByName');
 
@@ -73,9 +71,8 @@
 		selectedData = data?.sort((a, b) => a.category.name.localeCompare(b.category.name));
 	};
 	const selectDataByDNR = () => {
-		17
-		selectedData = data?.filter((a) => !a.cancelled);
-
+	
+		selectedData = selectedData?.filter((a) => !a.cancelled);
 	};
 
 	const ascentIcon = `<svg width="50" height="10" xmlns="http://www.w3.org/2000/svg">
@@ -95,7 +92,7 @@
 	$: {
 		ascendingCSS = buttonCSS + ('Ascending' !== ascentText ? selectedCSS : inactiveCSS);
 		stockCSS = buttonCSS + (lowWarning ? selectedCSS : inactiveCSS);
-		DNRCSS = buttonCSS + (!isDNR ? selectedCSS : inactiveCSS);
+		DNRCSS = buttonCSS + (selectByDNR ? selectedCSS : inactiveCSS);
 		data;
 		selectedData;
 		ItemList;
@@ -106,36 +103,38 @@
 	let ascentText = 'Ascending';
 	let lowWarning = false;
 	let ItemList;
-	let isDNR = true;
+	let selectByDNR = false;
+
 	const toggleWarning = () => {
 		lowWarning = !lowWarning;
-		if (lowWarning) {
-			selectDataByWarning();
-		} else {
-			resetSelection();
-		}
+		checkFilters();
 	};
 	const toggleDNR = () => {
-		isDNR = !isDNR;
-		if (!isDNR) {
-			selectDataByDNR();
-		} else {
-			resetSelection();
-		}
+		selectByDNR = !selectByDNR;
+		checkFilters();
 	};
 	const selectDataByWarning = () => {
-		selectedData = data.filter((item) => item.quantity < item.min_quantity);
+		selectedData = selectedData.filter((item) => {return item.quantity <= item.min_quantity});
+		console.log('selected',selectedData)
 	};
+
 	const resetSelection = () => {
 		selectedData = [...data];
 	};
+	
+	const checkFilters = () =>{
+		resetSelection();
+		if (lowWarning) {selectDataByWarning()};
+		if (selectByDNR) {selectDataByDNR()};
+	}
+
 	const reverseData = () => {
 		ascentText = ascentText === 'Ascending' ? 'Descending' : 'Ascending';
 		ItemList.classList.toggle('flex-col');
 		ItemList.classList.toggle('flex-col-reverse');
 	};
-	let searchValue = "";
-	$ : {
+	let searchValue = '';
+	$: {
 		searchValue;
 		handleSearch();
 	}
@@ -152,7 +151,7 @@
 		return filteredData;
 	};
 
-	const handleSearch = () =>{
+	const handleSearch = () => {
 		let failed = false;
 		selectedData = [];
 		let arr = [];
@@ -170,51 +169,63 @@
 			selectedData = data;
 			resetSelection();
 		}
-	}
+	};
 	const heads = {
-		'Name': sortByName,
-		'Stock': sortByStock,
+		Name: sortByName,
+		Stock: sortByStock,
 		'Minimum stock': sortByMinStock,
-		'Category': sortByCategory
+		Category: sortByCategory
 	};
 	const spaceBetween = 'justify-content:space-around';
 	let isFocused = false;
 	$: {
 		isFocused;
 	}
-	const searchFocused = () =>{
+	const searchFocused = () => {
 		isFocused = true;
-	}
-	const searchUnFocused = () =>{
+	};
+	const searchUnFocused = () => {
 		isFocused = false;
-	}
-	const handleSuccessChange = () =>{
-
-	}
-	const handleCreateNew = () =>{
+	};
+	const handleSuccessChange = () => {};
+	const handleCreateNew = () => {
 		openCrud(null);
-	}
+	};
 </script>
 
 <svelte:head>
 	<title>DashBoard</title>
 	<meta name="description" content="About this app" />
 </svelte:head>
+
 <div class="flex flex-row">
-	<div class="flex flex-row justify-center centeri-items">
+	{#if true}
+	<div class="flex flex-row justify-center center-items">
 		<div class="fixed flex flex-col mt-[8em] mr-[14em] justify-center center-items">
 			<button class={ascendingCSS} on:click={reverseData}>{ascentText}</button>
 			<button class={stockCSS} on:click={toggleWarning}>Show Only Low Stock</button>
 			<button class={DNRCSS} on:click={toggleDNR}
-				>{!isDNR ? 'Show' : 'Remove'} Do Not Reorder</button
+				>{!selectByDNR ? 'Show' : 'Remove'} Do Not Reorder</button
 			>
-			<div class="relative flex-row flex  justify-center center-items"><input class="rounded shadow-md p-[2px]" bind:value={searchValue} on:focus={searchFocused} on:focusout={searchUnFocused}/> <div class={isFocused ? "absolute opacity-0" : "absolute opacity-50"}>🔍</div></div>
+			<div class="relative flex-row flex justify-center center-items">
+				<input
+					class="rounded shadow-md p-[2px]"
+					bind:value={searchValue}
+					on:focus={searchFocused}
+					on:focusout={searchUnFocused}
+				/>
+				<div class={isFocused ? 'absolute opacity-0' : 'absolute opacity-50'}>🔍</div>
+			</div>
 			<button class={SaveAllCSS} on:click={saveAll}>Save All</button>
-			<button class={'ounded bg-green-500 shadow-md max-h-[2em] mt-[8em] min-w-4[em] px-[4px] py-[2px] text-white '} on:click={handleCreateNew}>Create New</button>
+			<button
+				class={'rounded bg-green-500 shadow-md max-h-[2em] mt-[8em] min-w-4[em] px-[4px] py-[2px] text-white '}
+				on:click={handleCreateNew}>Create New</button
+			>
 		</div>
 	</div>
+	{/if}
 	<div class="min-w-[60%] pt-[1em] justify-center center-items flex flex-row">
-		<table class="flex flex-col flex-wrap">
+		<table class="flex flex-col flex-wrap w-[78ch] overflow-hidden">
 			<div class="flex flex-row">
 				<div class="w-[50px] bg-gray-400" />
 				{#each Object.keys(heads) as head}
@@ -226,26 +237,39 @@
 			</div>
 			<div id="ItemList" bind:this={ItemList} class="flex flex-col-reverse">
 				{#each selectedData as item (item.id)}
-					<div class="flex flex-row center-items justify-center">
-						<Item bind:item={item} onUpdate={(item, amount, minqty) => handleUpdate(item, amount, minqty)}/><button
-							class="rounded bg-gray-200 shadow-md mt-[8px] max-h-[2em] min-w-[4em]"
-							on:click={() => openCrud(item)}>edit</button
-						>
-
-					</div>
+					<button class="flex flex-row flex-start w-[78ch] border-t transition-background duration-200 ease-in-out bg-transparent hover:bg-blue-300" on:click={()=>openCrud(item)}>
+						<Item
+							bind:item
+							onUpdate={(item, amount, minqty) => handleUpdate(item, amount, minqty)}
+							
+						/>
+					</button>
 				{/each}
 			</div>
 		</table>
 	</div>
 
-		 {#if open}
-		<div  class={"fixed w-[100vw] h-[100vh] top-0 left-0"} > 
-			<div class="w-[100vw] h-[100vh] bg-gray-200 opacity-80 z-1 top-0 left-0 absolute" on:click={()=>{open=false}}/>
-					<ItemCrud refresh={()=>{fetchData();showSuccess = true; open = !open}} item={editingItem}/>
-					
+	{#if open}
+		<div class={'fixed w-[100vw] h-[100vh] top-0 left-0'}>
+			<div
+				class="w-[100vw] h-[100vh] bg-gray-200 opacity-80 z-1 top-0 left-0 absolute"
+				on:click={() => {
+					open = false;
+				}}
+			/>
+			<ItemCrud
+				refresh={() => {
+					fetchData();
+					showSuccess = true;
+					open = !open;
+				}}
+				item={editingItem}
+				isEdit={!!editingItem}
+			/>
 		</div>
-		 {:else}<div></div> {/if} 
-		 {#if showSuccess}
-			<Success bind:show={showSuccess} />
-		{/if}
+	{:else}<div />
+	{/if}
+	{#if showSuccess}
+		<Success bind:show={showSuccess} />
+	{/if}
 </div>

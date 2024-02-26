@@ -10,7 +10,6 @@
 	
 	onMount(()=>{
 		isMobile = checkMobileDevice();
-
 	})
 </script>
 

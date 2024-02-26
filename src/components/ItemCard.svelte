@@ -7,19 +7,14 @@
     }
 </script>
 
-<div
-	class={itemCSS}
-
->
+<div class={itemCSS}>
 	<li class='flex flex-col justify-center center-items'>
         <div class="flex flex-row justify-center center-items">
-		<img src={item.image.image} alt={'product image'} height="100px" width="100px" />
-    </div>
-        <div
-			
-		>
-			<h3>{item.name}</h3>
-			<p class="text-sm text-[#687] pt-auto">stock:{item.quantity}</p>
+			<img src={item.image.image} alt={'product image'} height="100px" width="100px" />
+    	</div>
+        <div >
+			<h3 class="overflow-y-auto pt-[4px] h-[15ch] ">{item.name}</h3>
+			<p class="text-sm text-[#687] pt-auto mb-[10px]">stock:{item.quantity}</p>
 		</div>
 	</li>
 </div>

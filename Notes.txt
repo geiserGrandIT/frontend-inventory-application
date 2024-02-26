@@ -1,0 +1,4 @@
+Need option to see where stuff is deployed and whether that is applicable to the item.
+This can be a front end configuration
+
+Add Location tags to items to know exactly which rooms items are consumed in

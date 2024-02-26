@@ -1,7 +1,7 @@
 <script>
     export let successMsg = "Successfully Updated";
     export let show = false;
-    export let killTime = 300000.0;
+    export let killTime = 2000.0;
     
     const killSelf = () => {
         setTimeout(() => {
