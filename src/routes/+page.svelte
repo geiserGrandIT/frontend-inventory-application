@@ -92,13 +92,11 @@
 		
 			try {amt = parseInt(amountSubmitted);}
 				catch (err){console.log(err);}
-		adt = AuditMode ? 'True' : 'False';
 		
 		//Sending info
 		const response = axios
 			.patch(`${baseURL()}/items/${productSelection}/`, {
-				'change-amount': amt.toString(),
-				'is-audit': adt
+				'quantity': amt.toString(),
 			})
 			.then((resp) => {
 				
@@ -108,12 +106,7 @@
 			.catch((err) => console.error(err));
 		console.log(response);
 	};
-	
-    let mode = AuditMode ? "Set Mode" : "Subtract Mode";
-    const handleChangeMode = () =>{
-        AuditMode = !AuditMode
-        mode = AuditMode ? "Set Mode" : "Subtract Mode";
-    }
+
 
 </script>
 

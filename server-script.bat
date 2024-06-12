@@ -1,1 +1,1 @@
-npm run dev -- --host ims.geisergrand.com
+npm run dev -- --host localhost
